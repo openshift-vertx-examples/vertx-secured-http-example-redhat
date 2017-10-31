@@ -1,0 +1,7 @@
+name: Secured Vertx - Rest & Red Hat SSO
+description: Quickstart to expose a REST Greeting endpoint using Eclipse Vert.x & Secured by Red Hat SSO
+versions:
+  - id: community
+    name: 3.4.2.Final (Community)
+  - id: redhat
+    name: 3.4.2.redhat-006 (RHOAR)

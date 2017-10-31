@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: launchpad-builder
+  annotations:
+    description: This template creates a Build Configuration using an S2I builder.
+    tags: instant-app
+parameters:
+- name: SOURCE_REPOSITORY_URL
+  description: The source URL for the application
+  displayName: Source URL
+  required: true
+- name: SOURCE_REPOSITORY_REF
+  description: The branch name for the application
+  displayName: Source Branch
+  value: master
+  required: true
+- name: SOURCE_REPOSITORY_DIR
+  description: The location within the source repo of the application
+  displayName: Source Directory
+  value: .
+  required: true
+- name: GITHUB_WEBHOOK_SECRET
+  description: A secret string used to configure the GitHub webhook.
+  displayName: GitHub Webhook Secret
+  required: true
+  from: '[a-zA-Z0-9]{40}'
+  generate: expression
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: secured-vertx-http
+  spec: {}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: runtime
+  spec:
+    tags:
+    - name: latest
+      from:
+        kind: DockerImage
+        name: registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: secured-vertx-http
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: secured-vertx-http:latest
+    postCommit: {}
+    resources: {}
+    source:
+      git:
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
+      #contextDir: ${SOURCE_REPOSITORY_DIR}
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: runtime:latest
+        env:
+        - name: MAVEN_ARGS_APPEND
+          value: "-pl ${SOURCE_REPOSITORY_DIR}"
+        - name: ARTIFACT_DIR
+          value: "${SOURCE_REPOSITORY_DIR}/target"
+      type: Source
+    triggers:
+    - github:
+        secret: ${GITHUB_WEBHOOK_SECRET}
+      type: GitHub
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: secured-vertx-http
+spec:
+  to:
+    name: "secured-vertx-http"

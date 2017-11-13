@@ -38,6 +38,7 @@ import java.net.URLEncoder;
 
 @RunWith(VertxUnitRunner.class)
 public class SecuredBoosterIT {
+  private static String applicationName = System.getProperty("app.name");
 
   private Vertx vertx;
   private static String ssoEndpoint;
@@ -58,7 +59,7 @@ public class SecuredBoosterIT {
         ssoEndpoint = tokens[1];
         continue;
       }
-      if ("secured-vertx-http".equals(tokens[0])) {
+      if (applicationName.equals(tokens[0])) {
         boosterEndpoint = tokens[1];
       }
     }

@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.openshift</groupId>
     <artifactId>booster-parent</artifactId>
-    <version>11</version>
+    <version>13</version>
   </parent>
 
   <artifactId>secured-vertx-http</artifactId>
@@ -196,6 +196,11 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <app.name>${project.artifactId}</app.name>
+              </systemPropertyVariables>
+            </configuration>
             <executions>
               <execution>
                 <goals>

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: DeploymentConfig
 metadata:
-  name: secured-vertx-http
+  name: ${project.artifactId}
 spec:
   replicas: 1
   strategy:
@@ -28,9 +28,9 @@ spec:
           value: ${CLIENT_ID}
         - name: SECRET
           value: ${SECRET}
-        image: secured-vertx-http:latest
+        image: ${project.artifactId}:latest
         imagePullPolicy: IfNotPresent
-        name: secured-vertx-http
+        name: ${project.artifactId}
         ports:
         - containerPort: 8080
           name: http
@@ -48,8 +48,8 @@ spec:
   - imageChangeParams:
       automatic: true
       containerNames:
-      - secured-vertx-http
+      - ${project.artifactId}
       from:
         kind: ImageStreamTag
-        name: secured-vertx-http:latest
+        name: ${project.artifactId}:latest
     type: ImageChange

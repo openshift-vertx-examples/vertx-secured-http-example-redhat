@@ -1,0 +1,17 @@
+spec:
+  template:
+    spec:
+      containers:
+      - env:
+        - name: JAVA_APP_DIR
+          value: /deployments
+        - name: SSO_AUTH_SERVER_URL
+          value: ${SSO_AUTH_SERVER_URL}
+        - name: REALM
+          value: ${REALM}
+        - name: REALM_PUBLIC_KEY
+          value: ${REALM_PUBLIC_KEY}
+        - name: CLIENT_ID
+          value: ${CLIENT_ID}
+        - name: SECRET
+          value: ${SECRET}

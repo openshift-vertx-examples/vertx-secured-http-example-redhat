@@ -7,14 +7,14 @@ metadata:
     description: Application template for Eclipse Vert.x REST + Red Hat SSO demo application.
     tags: javaee,java,jboss,xpaas,sso
     version: 1.3.2
-  name: secured-vertx-http
+  name: ${project.artifactId}
 labels:
-  template: secured-vertx-http
+  template: ${project.artifactId}
   xpaas: 1.3.2
 parameters:
 - description: The name for the application.
   name: APPLICATION_NAME
-  value: secured-vertx-http
+  value: ${project.artifactId}
   required: true
 - description: 'Custom hostname for http service route.  Leave blank for default hostname,
     e.g.: <application-name>-<project>.<default-domain-suffix>'

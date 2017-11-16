@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Route
 metadata:
-  name: secured-vertx-http
+  name: ${project.artifactId}
 spec:
   to:
-    name: "secured-vertx-http"
+    name: "${project.artifactId}"

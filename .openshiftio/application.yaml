@@ -50,7 +50,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: secured-vertx-http:latest
+        name: secured-vertx-http:13
     postCommit: {}
     resources: {}
     source:

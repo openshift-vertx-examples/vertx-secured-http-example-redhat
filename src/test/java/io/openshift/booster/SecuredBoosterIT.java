@@ -16,229 +16,117 @@
  */
 package io.openshift.booster;
 
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.unit.Async;
-import io.vertx.ext.unit.TestContext;
-import io.vertx.ext.unit.junit.VertxUnitRunner;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.arquillian.cube.kubernetes.impl.utils.CommandExecutor;
+import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
+import org.arquillian.cube.openshift.impl.enricher.RouteURL;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.*;
 import org.junit.runner.RunWith;
 
 import java.io.*;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-@RunWith(VertxUnitRunner.class)
+import static com.jayway.awaitility.Awaitility.await;
+import static com.jayway.restassured.RestAssured.*;
+import static org.hamcrest.CoreMatchers.*;
+
+@RunWith(Arquillian.class)
 public class SecuredBoosterIT {
-  private static String applicationName = System.getProperty("app.name");
 
-  private Vertx vertx;
+  @RouteURL("${app.name}")
+  @AwaitRoute
+  private URL boosterEndpoint;
+
+  private static final CommandExecutor COMMAND_EXECUTOR = new CommandExecutor();
   private static String ssoEndpoint;
-  private static String boosterEndpoint;
 
   @BeforeClass
-  public static void init() throws IOException, InterruptedException {
-    // Use a ProcessBuilder
-    ProcessBuilder pb = new ProcessBuilder("oc", "get", "routes");
+  public static void init() {
+    COMMAND_EXECUTOR.execCommand("oc create -f service.sso.yaml");
+    ssoEndpoint = COMMAND_EXECUTOR
+      .execCommand("oc get route secure-sso -o jsonpath='{\"https://\"}{.spec.host}{\"/auth\"}'")
+      .get(0)
+      .replace("'", ""); // for some reason, the string contains a single ' before the URL
 
-    Process p = pb.start();
-    InputStream is = p.getInputStream();
-    BufferedReader br = new BufferedReader(new InputStreamReader(is));
-    String line;
-    while ((line = br.readLine()) != null) {
-      String[] tokens = line.split("\\s+");
-      if ("secure-sso".equals(tokens[0])) {
-        ssoEndpoint = tokens[1];
-        continue;
+    /* Await the sso server to be ready so we can make token requests. We cannot use @AwaitRoute as we are deploying
+    the sso server as part of the tests.
+    When making requests too early (the sso server is not ready yet), it throws SSLHandshakeException,
+    so we are taking care of that in the try-catch here. */
+    await().atMost(5, TimeUnit.MINUTES).until(() -> {
+      try {
+        return given().relaxedHTTPSValidation().when().get(ssoEndpoint).statusCode() == 200;
+      } catch (Exception ex) {
+        return false;
       }
-      if (applicationName.equals(tokens[0])) {
-        boosterEndpoint = tokens[1];
-      }
-    }
-
-    int r = p.waitFor(); // Let the process finish.
-    if (r != 0) { // error
-      throw new RuntimeException("oc exit code: " + r);
-    }
+    });
   }
 
-  @Before
-  public void before(TestContext context) {
-    vertx = Vertx.vertx();
-    vertx.exceptionHandler(context.exceptionHandler());
+  @Test
+  public void defaultUser_defaultFrom() {
+    String token = getToken("alice", "password");
+
+    given().header("Authorization", "Bearer " + token)
+      .when().get(boosterEndpoint.toString() + "greeting")
+      .then().body("content", equalTo("Hello, World!"));
   }
 
-  @After
-  public void after(TestContext context) {
-    vertx.close(context.asyncAssertSuccess());
+  @Test
+  public void defaultUser_customFrom() {
+    String token = getToken("alice", "password");
+
+    given().header("Authorization", "Bearer " + token)
+      .when().get(boosterEndpoint.toString() + "greeting?name=Scott")
+      .then().body("content", equalTo("Hello, Scott!"));
   }
 
-  private void getToken(String username, String password, Handler<AsyncResult<String>> handler) {
-    Buffer form = Buffer.buffer();
+  @Test
+  public void adminUser() {
+    String token = getToken("admin", "admin");
 
+    given().header("Authorization", "Bearer " + token)
+      .when().get(boosterEndpoint.toString() + "greeting")
+      .then().statusCode(403); // should be 403 Forbidden, as the admin user does not have the required role
+  }
+
+  @Test
+  public void badPassword() {
+    String token = getToken("alice", "bad");
+
+    given().header("Authorization", "Bearer " + token)
+      .when().get(boosterEndpoint.toString() + "greeting?name=Scott")
+      .then().statusCode(401); // should be 401 Unauthorized, as auth fails because of providing bad password (token is null)
+  }
+
+  // SSO server cleanup
+  @AfterClass
+  public static void deleteSSO() {
+    COMMAND_EXECUTOR.execCommand("oc delete all --selector application=sso");
+    COMMAND_EXECUTOR.execCommand("oc delete secret sso-app-secret");
+    COMMAND_EXECUTOR.execCommand("oc delete secret sso-demo-secret");
+    COMMAND_EXECUTOR.execCommand("oc delete serviceaccount sso-service-account");
+  }
+
+  private String getToken(String username, String password) {
+    Map<String, String> requestParams = new HashMap<>();
     try {
-      form
-        .appendString("client_id=demoapp&")
-        .appendString("client_secret=1daa57a2-b60e-468b-a3ac-25bd2dc2eadc&")
-        .appendString("grant_type=password&")
-        .appendString("username=" + URLEncoder.encode(username, "UTF8") + "&")
-        .appendString("password=" + URLEncoder.encode(password, "UTF8"));
+      requestParams.put("grant_type", "password");
+      requestParams.put("username", URLEncoder.encode(username, "UTF8"));
+      requestParams.put("password", URLEncoder.encode(password, "UTF8"));
+      requestParams.put("client_id", "demoapp");
+      requestParams.put("client_secret", "1daa57a2-b60e-468b-a3ac-25bd2dc2eadc");
     } catch (UnsupportedEncodingException e) {
-      handler.handle(Future.failedFuture(e));
-      return;
+      e.printStackTrace();
     }
 
-    final HttpClient client = vertx.createHttpClient(new HttpClientOptions().setSsl(true).setTrustAll(true).setVerifyHost(false));
-
-    client
-      .post(443, ssoEndpoint, "/auth/realms/master/protocol/openid-connect/token", res -> {
-        res.exceptionHandler(t -> {
-          handler.handle(Future.failedFuture(t));
-          client.close();
-        });
-
-        res.bodyHandler(body -> {
-          if (res.statusCode() != 200) {
-            if (body.length() > 0) {
-              handler.handle(Future.failedFuture(body.toString()));
-            } else {
-              handler.handle(Future.failedFuture(res.statusMessage()));
-            }
-          } else {
-            try {
-              JsonObject token = new JsonObject(body);
-              handler.handle(Future.succeededFuture(token.getString("access_token")));
-            } catch (RuntimeException e) {
-              handler.handle(Future.failedFuture(e));
-            }
-          }
-        });
-      })
-      .exceptionHandler(t -> {
-        handler.handle(Future.failedFuture(t));
-        client.close();
-      })
-      .putHeader("Accept", "application/json")
-      .putHeader("Content-Type", "application/x-www-form-urlencoded")
-      .putHeader("Content-Length", Integer.toString(form.length()))
-      .write(form)
-      .end();
-  }
-
-  private void callAPI(String token, String uri, Handler<AsyncResult<JsonObject>> handler) {
-
-    final HttpClient client = vertx.createHttpClient();
-
-    client
-      .get(80, boosterEndpoint, uri, res -> {
-        res.exceptionHandler(t -> {
-          handler.handle(Future.failedFuture(t));
-          client.close();
-        });
-
-        res.bodyHandler(body -> {
-          if (res.statusCode() != 200) {
-            if (body.length() > 0) {
-              handler.handle(Future.failedFuture(body.toString()));
-            } else {
-              handler.handle(Future.failedFuture(res.statusMessage()));
-            }
-          } else {
-            try {
-              handler.handle(Future.succeededFuture(new JsonObject(body)));
-            } catch (RuntimeException e) {
-              handler.handle(Future.failedFuture(e));
-            }
-          }
-        });
-      })
-      .exceptionHandler(t -> {
-        handler.handle(Future.failedFuture(t));
-        client.close();
-      })
-      .putHeader("Authorization", "Bearer " + token)
-      .end();
-  }
-
-  @Test
-  public void defaultUser_defaultFrom(TestContext context) {
-    final Async test = context.async();
-
-    getToken("alice", "password", res -> {
-      if (res.failed()) {
-        context.fail(res.cause());
-      } else {
-        callAPI(res.result(), "/greeting", res2 -> {
-          if (res2.failed()) {
-            context.fail(res2.cause());
-          } else {
-            context.assertEquals("Hello, World!", res2.result().getString("content"));
-            test.complete();
-          }
-        });
-      }
-    });
-  }
-
-  @Test
-  public void defaultUser_customFrom(TestContext context) {
-    final Async test = context.async();
-
-    getToken("alice", "password", res -> {
-      if (res.failed()) {
-        context.fail(res.cause());
-      } else {
-        callAPI(res.result(), "/greeting?name=Scott", res2 -> {
-          if (res2.failed()) {
-            context.fail(res2.cause());
-          } else {
-            context.assertEquals("Hello, Scott!", res2.result().getString("content"));
-            test.complete();
-          }
-        });
-      }
-    });
-  }
-
-  @Test
-  public void adminUser(TestContext context) {
-    final Async test = context.async();
-
-    getToken("admin", "admin", res -> {
-      if (res.failed()) {
-        context.fail(res.cause());
-      } else {
-        callAPI(res.result(), "/greeting", res2 -> {
-          if (res2.failed()) {
-            // must fail as the admin user does not have the required role
-            test.complete();
-          } else {
-            context.fail("wrong role should fail!");
-          }
-        });
-      }
-    });
-  }
-
-  @Test
-  public void badPassword(TestContext context) {
-    final Async test = context.async();
-
-    getToken("alice", "bad", res -> {
-      if (res.failed()) {
-        // must fail as the admin user does not have the required role
-        test.complete();
-      } else {
-        context.fail("Bad password should not pass!");
-      }
-    });
+    return given()
+      .relaxedHTTPSValidation()
+      .params(requestParams)
+      .when()
+      .post(ssoEndpoint + "/realms/master/protocol/openid-connect/token")
+      .path("access_token");
   }
 }

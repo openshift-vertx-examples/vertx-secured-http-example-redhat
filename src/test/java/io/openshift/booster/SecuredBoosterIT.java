@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.jayway.awaitility.Awaitility.await;
-import static com.jayway.restassured.RestAssured.*;
+import static org.awaitility.Awaitility.await;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.CoreMatchers.*;
 
 @RunWith(Arquillian.class)

@@ -16,8 +16,10 @@
  */
 package io.openshift.booster;
 
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -31,45 +33,48 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(VertxUnitRunner.class)
 public class RestApplicationTest {
 
-    private Vertx vertx;
-    private HttpClient client;
+  private final static int PORT = 8081;
+  private Vertx vertx;
+  private HttpClient client;
 
-    @Before
-    public void before(TestContext context) {
-        vertx = Vertx.vertx();
-        vertx.exceptionHandler(context.exceptionHandler());
-        vertx.deployVerticle(RestApplication.class.getName(), context.asyncAssertSuccess());
-        client = vertx.createHttpClient();
-    }
+  @Before
+  public void before(TestContext context) {
+    vertx = Vertx.vertx();
+    vertx.exceptionHandler(context.exceptionHandler());
+    vertx.deployVerticle(RestApplication.class.getName(),
+      new DeploymentOptions().setConfig(new JsonObject().put("http.port", PORT)),
+      context.asyncAssertSuccess());
+    client = vertx.createHttpClient();
+  }
 
-    @After
-    public void after(TestContext context) {
-        client.close();
-        vertx.close(context.asyncAssertSuccess());
-    }
+  @After
+  public void after(TestContext context) {
+    client.close();
+    vertx.close(context.asyncAssertSuccess());
+  }
 
-    @Test
-    public void callGreetingTest(TestContext context) {
-        // Send a request and get a response
-        Async async = context.async();
-        client.get(8080, "localhost", "/greeting", resp -> {
-            assertThat(resp.statusCode()).isEqualTo(401);
-            async.complete();
-        })
-            .exceptionHandler(context::fail)
-            .end();
-    }
+  @Test
+  public void callGreetingTest(TestContext context) {
+    // Send a request and get a response
+    Async async = context.async();
+    client.get(PORT, "localhost", "/greeting", resp -> {
+      assertThat(resp.statusCode()).isEqualTo(401);
+      async.complete();
+    })
+      .exceptionHandler(context::fail)
+      .end();
+  }
 
-    @Test
-    public void callGreetingWithParamTest(TestContext context) {
-        // Send a request and get a response
-        Async async = context.async();
-        client.get(8080, "localhost", "/greeting?name=Charles", resp -> {
-            assertThat(resp.statusCode()).isEqualTo(401);
-            async.complete();
-        })
-            .exceptionHandler(context::fail)
-            .end();
-    }
+  @Test
+  public void callGreetingWithParamTest(TestContext context) {
+    // Send a request and get a response
+    Async async = context.async();
+    client.get(PORT, "localhost", "/greeting?name=Charles", resp -> {
+      assertThat(resp.statusCode()).isEqualTo(401);
+      async.complete();
+    })
+      .exceptionHandler(context::fail)
+      .end();
+  }
 
 }

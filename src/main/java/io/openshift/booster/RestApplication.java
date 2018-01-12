@@ -35,7 +35,7 @@ public class RestApplication extends AbstractVerticle {
   private long counter;
 
   @Override
-  public void start(Future done) {
+  public void start(Future<Void> done) {
     // Create a router object.
     Router router = Router.router(vertx);
     router.get("/health").handler(rc -> rc.response().end("OK"));
@@ -95,6 +95,6 @@ public class RestApplication extends AbstractVerticle {
         // Retrieve the port from the configuration,
         // default to 8080.
         config().getInteger("http.port", 8080),
-        done.completer());
+        ar -> done.handle(ar.mapEmpty()));
   }
 }

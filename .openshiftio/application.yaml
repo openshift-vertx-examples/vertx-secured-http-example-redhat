@@ -56,7 +56,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: secured-vertx-http:latest
+        name: '
     postCommit: {}
     resources: {}
     source:
@@ -98,7 +98,7 @@ objects:
       expose: "true"
       app: secured-vertx-http
       provider: fabric8
-      version: 15-SNAPSHOT
+      version: "15"
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -111,17 +111,17 @@ objects:
       app: secured-vertx-http
       provider: fabric8
       group: io.openshift
-- apiVersion: v1
+- apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
     annotations:
       fabric8.io/iconUrl: img/icons/vertx.svg
       fabric8.io/git-branch: master
-      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=15-SNAPSHOT
+      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=15
     labels:
       app: secured-vertx-http
       provider: fabric8
-      version: 15-SNAPSHOT
+      version: "15"
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -140,11 +140,11 @@ objects:
         annotations:
           fabric8.io/iconUrl: img/icons/vertx.svg
           fabric8.io/git-branch: master
-          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=15-SNAPSHOT
+          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=15
         labels:
           app: secured-vertx-http
           provider: fabric8
-          version: 15-SNAPSHOT
+          version: "15"
           group: io.openshift
       spec:
         containers:
@@ -165,7 +165,7 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          image: secured-vertx-http:latest
+          image: ' '
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -194,21 +194,13 @@ objects:
             privileged: false
     triggers:
     - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - vertx
-        from:
-          kind: ImageStreamTag
-          name: secured-vertx-http:latest
-      type: ImageChange
 - apiVersion: v1
   kind: Route
   metadata:
     labels:
       app: secured-vertx-http
       provider: fabric8
-      version: 15-SNAPSHOT
+      version: "15"
       group: io.openshift
     name: secured-vertx-http
   spec:

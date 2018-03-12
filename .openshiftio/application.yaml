@@ -98,7 +98,7 @@ objects:
       expose: "true"
       app: secured-vertx-http
       provider: fabric8
-      version: 16-SNAPSHOT
+      version: "16"
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -117,11 +117,11 @@ objects:
     annotations:
       fabric8.io/iconUrl: img/icons/vertx.svg
       fabric8.io/git-branch: master
-      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=16-SNAPSHOT
+      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=16
     labels:
       app: secured-vertx-http
       provider: fabric8
-      version: 16-SNAPSHOT
+      version: "16"
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -140,11 +140,11 @@ objects:
         annotations:
           fabric8.io/iconUrl: img/icons/vertx.svg
           fabric8.io/git-branch: master
-          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=16-SNAPSHOT
+          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=16
         labels:
           app: secured-vertx-http
           provider: fabric8
-          version: 16-SNAPSHOT
+          version: "16"
           group: io.openshift
       spec:
         containers:
@@ -200,7 +200,7 @@ objects:
     labels:
       app: secured-vertx-http
       provider: fabric8
-      version: 16-SNAPSHOT
+      version: "16"
       group: io.openshift
     name: secured-vertx-http
   spec:

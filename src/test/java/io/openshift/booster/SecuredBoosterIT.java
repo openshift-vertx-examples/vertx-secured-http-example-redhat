@@ -46,7 +46,10 @@ public class SecuredBoosterIT {
 
   @BeforeClass
   public static void init() {
-    COMMAND_EXECUTOR.execCommand("oc create -f service.sso.yaml");
+    // You can disable the sso server initialization by setting the system property skip.sso.init to true
+    if (!Boolean.getBoolean("skip.sso.init")) {
+      COMMAND_EXECUTOR.execCommand("oc create -f service.sso.yaml");
+    }
     ssoEndpoint = COMMAND_EXECUTOR
       .execCommand("oc get route secure-sso -o jsonpath='{\"https://\"}{.spec.host}{\"/auth\"}'")
       .get(0)
@@ -104,10 +107,12 @@ public class SecuredBoosterIT {
   // SSO server cleanup
   @AfterClass
   public static void deleteSSO() {
-    COMMAND_EXECUTOR.execCommand("oc delete all --selector application=sso");
-    COMMAND_EXECUTOR.execCommand("oc delete secret sso-app-secret");
-    COMMAND_EXECUTOR.execCommand("oc delete secret sso-demo-secret");
-    COMMAND_EXECUTOR.execCommand("oc delete serviceaccount sso-service-account");
+    if (!Boolean.getBoolean("skip.sso.init")) {
+      COMMAND_EXECUTOR.execCommand("oc delete all --selector application=sso");
+      COMMAND_EXECUTOR.execCommand("oc delete secret sso-app-secret");
+      COMMAND_EXECUTOR.execCommand("oc delete secret sso-demo-secret");
+      COMMAND_EXECUTOR.execCommand("oc delete serviceaccount sso-service-account");
+    }
   }
 
   private String getToken(String username, String password) {

@@ -215,6 +215,7 @@
             <configuration>
               <systemPropertyVariables>
                 <app.name>${project.artifactId}</app.name>
+                <skip.sso.init>false</skip.sso.init>
               </systemPropertyVariables>
             </configuration>
             <executions>

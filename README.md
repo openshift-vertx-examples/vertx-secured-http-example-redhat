@@ -1,4 +1,4 @@
-<http://appdev.openshift.io/docs/vertx-runtime.html#mission-secured-vertx>
+<https://appdev.openshift.io/docs/vertx-runtime.html#mission-rest-http-secured-vertx>
 
 
 

@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.openshift</groupId>
     <artifactId>booster-parent</artifactId>
-    <version>21</version>
+    <version>22</version>
   </parent>
 
   <artifactId>secured-vertx-http</artifactId>

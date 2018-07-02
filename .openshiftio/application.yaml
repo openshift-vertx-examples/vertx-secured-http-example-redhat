@@ -98,7 +98,7 @@ objects:
       expose: "true"
       app: secured-vertx-http
       provider: fabric8
-      version: "20"
+      version: 21-SNAPSHOT
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -117,11 +117,11 @@ objects:
     annotations:
       fabric8.io/iconUrl: img/icons/vertx.svg
       fabric8.io/git-branch: master
-      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=20
+      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=21-SNAPSHOT
     labels:
       app: secured-vertx-http
       provider: fabric8
-      version: "20"
+      version: 21-SNAPSHOT
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -140,11 +140,11 @@ objects:
         annotations:
           fabric8.io/iconUrl: img/icons/vertx.svg
           fabric8.io/git-branch: master
-          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=20
+          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=21-SNAPSHOT
         labels:
           app: secured-vertx-http
           provider: fabric8
-          version: "20"
+          version: 21-SNAPSHOT
           group: io.openshift
       spec:
         containers:
@@ -165,7 +165,7 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          image: openshift/secured-vertx-http:20
+          image: openshift/secured-vertx-http:snapshot-180702-121250-0676
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -200,7 +200,7 @@ objects:
     labels:
       app: secured-vertx-http
       provider: fabric8
-      version: "20"
+      version: 21-SNAPSHOT
       group: io.openshift
     name: secured-vertx-http
   spec:

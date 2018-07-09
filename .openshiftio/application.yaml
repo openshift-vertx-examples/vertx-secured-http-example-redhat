@@ -56,7 +56,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${IMAGENAME}
+        name: secured-vertx-http:latest
     postCommit: {}
     resources: {}
     source:
@@ -165,7 +165,7 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          image: openshift/secured-vertx-http:snapshot-180702-121250-0676
+          image: secured-vertx-http:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -194,15 +194,27 @@ objects:
             privileged: false
     triggers:
     - type: ConfigChange
-- apiVersion: v1
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - vertx
+        from:
+          kind: ImageStreamTag
+          name: secured-vertx-http:latest
+      type: ImageChange
+- apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
     labels:
+      expose: "true"
       app: secured-vertx-http
       provider: fabric8
       version: 21-SNAPSHOT
       group: io.openshift
     name: secured-vertx-http
   spec:
+    port:
+      targetPort: 8080
     to:
+      kind: Service
       name: secured-vertx-http

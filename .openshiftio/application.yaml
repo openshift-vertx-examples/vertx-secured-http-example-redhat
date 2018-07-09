@@ -56,7 +56,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: secured-vertx-http:21
+        name: secured-vertx-http:latest
     postCommit: {}
     resources: {}
     source:
@@ -98,7 +98,7 @@ objects:
       expose: "true"
       app: secured-vertx-http
       provider: fabric8
-      version: "21"
+      version: 22-SNAPSHOT
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -117,11 +117,11 @@ objects:
     annotations:
       fabric8.io/iconUrl: img/icons/vertx.svg
       fabric8.io/git-branch: master
-      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=21
+      fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=22-SNAPSHOT
     labels:
       app: secured-vertx-http
       provider: fabric8
-      version: "21"
+      version: 22-SNAPSHOT
       group: io.openshift
     name: secured-vertx-http
   spec:
@@ -140,11 +140,11 @@ objects:
         annotations:
           fabric8.io/iconUrl: img/icons/vertx.svg
           fabric8.io/git-branch: master
-          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=21
+          fabric8.io/metrics-path: dashboard/file/kubernetes-pods.json/?var-project=secured-vertx-http&var-version=22-SNAPSHOT
         labels:
           app: secured-vertx-http
           provider: fabric8
-          version: "21"
+          version: 22-SNAPSHOT
           group: io.openshift
       spec:
         containers:
@@ -165,7 +165,7 @@ objects:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          image: secured-vertx-http:21
+          image: secured-vertx-http:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -200,7 +200,7 @@ objects:
         - vertx
         from:
           kind: ImageStreamTag
-          name: secured-vertx-http:21
+          name: secured-vertx-http:latest
       type: ImageChange
 - apiVersion: route.openshift.io/v1
   kind: Route
@@ -209,7 +209,7 @@ objects:
       expose: "true"
       app: secured-vertx-http
       provider: fabric8
-      version: "21"
+      version: 22-SNAPSHOT
       group: io.openshift
     name: secured-vertx-http
   spec:

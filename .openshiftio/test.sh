@@ -21,4 +21,4 @@ waitForPodReadiness "sso" 1
 waitForPodState "secured-vertx-http" "Running"
 waitForPodReadiness "secured-vertx-http" 1
 
-mvn verify -Popenshift-it -Denv.init.enabled=false -Dskip.sso.init
+mvn verify -Popenshift-it -Denv.init.enabled=false -Dskip.sso.init=true

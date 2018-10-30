@@ -28,7 +28,7 @@
 
   <artifactId>secured-vertx-http</artifactId>
   <packaging>jar</packaging>
-  <version>24-SNAPSHOT</version>
+  <version>24</version>
 
   <name>Vert.x - Secured HTTP endpoint</name>
   <description>Secured Vertx - HTTP &amp; Red Hat SSO</description>

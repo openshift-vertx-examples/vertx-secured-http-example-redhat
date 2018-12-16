@@ -20,12 +20,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>io.openshift</groupId>
-    <artifactId>booster-parent</artifactId>
-    <version>24</version>
-  </parent>
-
+  <groupId>io.openshift.booster</groupId>
   <artifactId>secured-vertx-http</artifactId>
   <packaging>jar</packaging>
   <version>25-SNAPSHOT</version>

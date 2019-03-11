@@ -14,7 +14,7 @@ else
   ORG=$1
 fi
 
-REPO="https://github.com/$ORG/vertx-secured-http-booster"
+REPO="https://github.com/$ORG/vertx-secured-http-booster-redhat"
 echo -e "\n${YELLOW}Using source repository: $REPO ...\n${NC}"
 
 # cleanup

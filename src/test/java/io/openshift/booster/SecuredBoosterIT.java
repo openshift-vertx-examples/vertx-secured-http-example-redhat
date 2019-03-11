@@ -19,6 +19,7 @@ package io.openshift.booster;
 import org.arquillian.cube.kubernetes.impl.utils.CommandExecutor;
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
+import org.arquillian.spacelift.execution.ExecutionException; 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -48,8 +49,18 @@ public class SecuredBoosterIT {
   public static void init() {
     // You can disable the sso server initialization by setting the system property skip.sso.init to true
     if (!Boolean.getBoolean("skip.sso.init")) {
+      try {
       // Remove service account
-      COMMAND_EXECUTOR.execCommand("oc delete sa sso-service-account");
+        COMMAND_EXECUTOR.execCommand("oc delete sa sso-service-account");
+      } catch (ExecutionException ee) {
+        if (ee.getMessage().contains("NotFound")) {
+          // NotFound is an expected exception
+          // Do nothing
+        } else {
+          throw ee; // Re-throw exception
+        }
+      }
+
       COMMAND_EXECUTOR.execCommand("oc create -f service.sso.yaml");
     }
     ssoEndpoint = COMMAND_EXECUTOR
@@ -110,10 +121,20 @@ public class SecuredBoosterIT {
   @AfterClass
   public static void deleteSSO() {
     if (!Boolean.getBoolean("skip.sso.init")) {
+      try {
+        COMMAND_EXECUTOR.execCommand("oc delete serviceaccount sso-service-account");
+      } catch (ExecutionException ee) {
+        if (ee.getMessage().contains("NotFound")) {
+          // NotFound is an expected exception
+          // Do nothing
+        } else {
+          throw ee; // Re-throw exception
+        }
+      }
+
       COMMAND_EXECUTOR.execCommand("oc delete all --selector application=sso");
       COMMAND_EXECUTOR.execCommand("oc delete secret sso-app-secret");
       COMMAND_EXECUTOR.execCommand("oc delete secret sso-demo-secret");
-      COMMAND_EXECUTOR.execCommand("oc delete serviceaccount sso-service-account");
     }
   }
 

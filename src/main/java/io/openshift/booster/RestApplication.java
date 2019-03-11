@@ -93,7 +93,7 @@ public class RestApplication extends AbstractVerticle {
     // Create the HTTP server and pass the "accept" method to the request handler.
     vertx
       .createHttpServer()
-      .requestHandler(router::accept)
+      .requestHandler(router)
       .listen(
         // Retrieve the port from the configuration,
         // default to 8080.

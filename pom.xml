@@ -29,7 +29,7 @@
   <description>Secured Vertx - HTTP &amp; Red Hat SSO</description>
 
   <properties>
-    <vertx.version>3.6.3.redhat-00009</vertx.version>
+    <vertx.version>3.6.3</vertx.version>
     <slf4j.version>1.7.26</slf4j.version>
     <vertx-maven-plugin.version>1.0.18</vertx-maven-plugin.version>
     <vertx.verticle>io.openshift.booster.RestApplication</vertx.verticle>

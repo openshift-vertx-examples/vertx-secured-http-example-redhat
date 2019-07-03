@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.openshift.booster;
+package io.openshift.example;
 
 import org.arquillian.cube.kubernetes.impl.utils.CommandExecutor;
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
@@ -40,7 +40,7 @@ public class SecuredBoosterIT {
 
   @RouteURL("${app.name}")
   @AwaitRoute
-  private URL boosterEndpoint;
+  private URL exampleEndpoint;
 
   private static final CommandExecutor COMMAND_EXECUTOR = new CommandExecutor();
   private static String ssoEndpoint;
@@ -86,7 +86,7 @@ public class SecuredBoosterIT {
     String token = getToken("alice", "password");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(boosterEndpoint.toString() + "greeting")
+      .when().get(exampleEndpoint.toString() + "greeting")
       .then().body("content", equalTo("Hello, World!"));
   }
 
@@ -95,7 +95,7 @@ public class SecuredBoosterIT {
     String token = getToken("alice", "password");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(boosterEndpoint.toString() + "greeting?name=Scott")
+      .when().get(exampleEndpoint.toString() + "greeting?name=Scott")
       .then().body("content", equalTo("Hello, Scott!"));
   }
 
@@ -104,7 +104,7 @@ public class SecuredBoosterIT {
     String token = getToken("admin", "admin");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(boosterEndpoint.toString() + "greeting")
+      .when().get(exampleEndpoint.toString() + "greeting")
       .then().statusCode(403); // should be 403 Forbidden, as the admin user does not have the required role
   }
 
@@ -113,7 +113,7 @@ public class SecuredBoosterIT {
     String token = getToken("alice", "bad");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(boosterEndpoint.toString() + "greeting?name=Scott")
+      .when().get(exampleEndpoint.toString() + "greeting?name=Scott")
       .then().statusCode(401); // should be 401 Unauthorized, as auth fails because of providing bad password (token is null)
   }
 

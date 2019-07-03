@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.openshift.booster;
+package io.openshift.example;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;

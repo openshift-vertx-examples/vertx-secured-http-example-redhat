@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.openshift.booster;
+package io.openshift.example;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -27,7 +27,7 @@ import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.JWTAuthHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-import io.openshift.booster.service.Greeting;
+import io.openshift.example.service.Greeting;
 
 import static io.vertx.core.http.HttpHeaders.CONTENT_TYPE;
 

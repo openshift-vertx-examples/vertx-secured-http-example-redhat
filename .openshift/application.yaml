@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: vertx-secured-http-booster
+  name: vertx-secured-http-example
   annotations:
     description: This templates creates a Vert.x application using Red Hat SSO to handle the authentication.
     tags: instant-app
@@ -33,14 +33,14 @@ objects:
   metadata:
     name: secured-vertx-http
     labels:
-      booster: secured-vertx-http
+      example: secured-vertx-http
   spec: {}
 - apiVersion: v1
   kind: ImageStream
   metadata:
     name: runtime-secured-vertx-http
     labels:
-      booster: secured-vertx-http
+      example: secured-vertx-http
   spec:
     tags:
     - name: latest
@@ -53,7 +53,7 @@ objects:
   metadata:
     name: secured-vertx-http
     labels:
-      booster: secured-vertx-http
+      example: secured-vertx-http
   spec:
     output:
       to:

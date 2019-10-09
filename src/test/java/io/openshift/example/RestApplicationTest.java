@@ -18,24 +18,22 @@ package io.openshift.example;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.ext.web.client.WebClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(VertxUnitRunner.class)
 public class RestApplicationTest {
 
   private final static int PORT = 8081;
   private Vertx vertx;
-  private HttpClient client;
+  private WebClient wclient;
 
   @Before
   public void before(TestContext context) {
@@ -44,12 +42,12 @@ public class RestApplicationTest {
     vertx.deployVerticle(RestApplication.class.getName(),
       new DeploymentOptions().setConfig(new JsonObject().put("http.port", PORT)),
       context.asyncAssertSuccess());
-    client = vertx.createHttpClient();
+    wclient = WebClient.create(vertx);
   }
 
   @After
   public void after(TestContext context) {
-    client.close();
+    wclient.close();
     vertx.close(context.asyncAssertSuccess());
   }
 
@@ -57,24 +55,24 @@ public class RestApplicationTest {
   public void callGreetingTest(TestContext context) {
     // Send a request and get a response
     Async async = context.async();
-    client.get(PORT, "localhost", "/greeting", resp -> {
-      assertThat(resp.statusCode()).isEqualTo(401);
-      async.complete();
-    })
-      .exceptionHandler(context::fail)
-      .end();
+    wclient.get(PORT, "localhost", "/greeting")
+      .send(resp -> {
+        context.assertTrue(resp.succeeded());
+        context.assertEquals(resp.result().statusCode(), 401);
+        async.complete();
+      });
   }
 
   @Test
   public void callGreetingWithParamTest(TestContext context) {
     // Send a request and get a response
     Async async = context.async();
-    client.get(PORT, "localhost", "/greeting?name=Charles", resp -> {
-      assertThat(resp.statusCode()).isEqualTo(401);
-      async.complete();
-    })
-      .exceptionHandler(context::fail)
-      .end();
+    wclient.get(PORT, "localhost", "/greeting?name=Charles")
+      .send(resp -> {
+        context.assertTrue(resp.succeeded());
+        context.assertEquals(resp.result().statusCode(), 401);
+        async.complete();
+      });
   }
 
 }

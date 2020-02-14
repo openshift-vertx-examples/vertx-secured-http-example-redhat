@@ -34,7 +34,7 @@
     <vertx-maven-plugin.version>1.0.20</vertx-maven-plugin.version>
     <vertx.verticle>io.openshift.example.RestApplication</vertx.verticle>
 
-    <fabric8-maven-plugin.version>4.3.0</fabric8-maven-plugin.version>
+    <fabric8-maven-plugin.version>4.4.0</fabric8-maven-plugin.version>
     <arquillian-cube.version>1.18.2</arquillian-cube.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>

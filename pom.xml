@@ -29,12 +29,12 @@
   <description>Secured Vertx - HTTP &amp; Red Hat SSO</description>
 
   <properties>
-    <vertx.version>3.8.1.redhat-00005</vertx.version>
+    <vertx.version>3.8.5.redhat-00005</vertx.version>
     <slf4j.version>1.7.30</slf4j.version>
     <vertx-maven-plugin.version>1.0.22</vertx-maven-plugin.version>
     <vertx.verticle>io.openshift.example.RestApplication</vertx.verticle>
 
-    <fabric8-maven-plugin.version>4.3.0</fabric8-maven-plugin.version>
+    <fabric8-maven-plugin.version>4.4.0</fabric8-maven-plugin.version>
     <arquillian-cube.version>1.18.2</arquillian-cube.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>

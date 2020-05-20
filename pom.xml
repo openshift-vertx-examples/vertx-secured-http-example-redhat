@@ -29,7 +29,7 @@
   <description>Secured Vertx - HTTP &amp; Red Hat SSO</description>
 
   <properties>
-    <vertx.version>3.8.5.redhat-00005</vertx.version>
+    <vertx.version>3.9.0.redhat-00008</vertx.version>
     <slf4j.version>1.7.30</slf4j.version>
     <vertx-maven-plugin.version>1.0.22</vertx-maven-plugin.version>
     <vertx.verticle>io.openshift.example.RestApplication</vertx.verticle>
@@ -97,6 +97,25 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>4.0.0</version>
+        <executions>
+          <execution>
+            <id>get-the-git-infos</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+            <phase>initialize</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <includeOnlyProperties>
+            <includeOnlyProperty>^git.remote.origin.url$</includeOnlyProperty>
+          </includeOnlyProperties>
+        </configuration>
       </plugin>
     </plugins>
 
@@ -195,7 +214,9 @@
                 <goals>
                   <goal>resource</goal>
                   <goal>build</goal>
+                  <goal>apply</goal>
                 </goals>
+                <phase>package</phase>
               </execution>
             </executions>
             <configuration>
@@ -204,11 +225,49 @@
                   <exclude>f8-maven-scm</exclude>
                 </excludes>
                 <config>
-                  <vertx-health-check>
+                  <f8-healthcheck-vertx>
                     <path>/health</path>
-                  </vertx-health-check>
+                  </f8-healthcheck-vertx>
                 </config>
               </enricher>
+              <resources>
+                <labels>
+                  <all>
+                    <property>
+                      <name>app.kubernetes.io/part-of</name>
+                      <value>secured-http-example</value>
+                    </property>
+                    <property>
+                      <name>app.kubernetes.io/name</name>
+                      <value>secured-http-service</value>
+                    </property>
+                    <property>
+                      <name>app.kubernetes.io/component</name>
+                      <value>frontend</value>
+                    </property>
+                    <property>
+                      <name>app.openshift.io/runtime</name>
+                      <value>vertx</value>
+                    </property>
+                    <property>
+                      <name>app.openshift.io/runtime-version</name>
+                      <value>${vertx.version}</value>
+                    </property>
+                  </all>
+                </labels>
+                <annotations>
+                  <all>
+                    <property>
+                      <name>app.openshift.io/vcs-uri</name>
+                      <value>${git.remote.origin.url}</value>
+                    </property>
+                    <property>
+                      <name>app.openshift.io/connects-to</name>
+                      <value>sso</value>
+                    </property>
+                  </all>
+                </annotations>
+              </resources>
             </configuration>
           </plugin>
         </plugins>

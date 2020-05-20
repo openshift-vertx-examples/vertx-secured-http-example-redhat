@@ -25,8 +25,11 @@ items:
   metadata:
     name: secure-sso
     labels:
-      application: sso
-      component: server
+      app.kubernetes.io/part-of: secured-http-example
+      app.kubernetes.io/name: secured-sso
+      app.kubernetes.io/component: backend
+      app.openshift.io/runtime: sso
+      app.openshift.io/runtime-version: "7.3"
   spec:
     ports:
     - port: 8443
@@ -38,8 +41,11 @@ items:
   metadata:
     name: sso
     labels:
-      application: sso
-      component: server
+      app.kubernetes.io/part-of: secured-http-example
+      app.kubernetes.io/name: secured-sso
+      app.kubernetes.io/component: backend
+      app.openshift.io/runtime: sso
+      app.openshift.io/runtime-version: "7.3"
   spec:
     ports:
     - port: 8080
@@ -51,8 +57,11 @@ items:
   metadata:
     name: sso
     labels:
-      application: sso
-      component: server
+      app.kubernetes.io/part-of: secured-http-example
+      app.kubernetes.io/name: secured-sso
+      app.kubernetes.io/component: backend
+      app.openshift.io/runtime: sso
+      app.openshift.io/runtime-version: "7.3"     
   spec:
     strategy:
       type: Rolling
@@ -66,8 +75,6 @@ items:
         name: sso
         labels:
           deploymentConfig: sso
-          application: sso
-          component: server
       spec:
         serviceAccountName: sso-service-account
         terminationGracePeriodSeconds: 30
@@ -166,8 +173,11 @@ items:
   metadata:
     name: secure-sso
     labels:
-      application: sso
-      component: server
+      app.kubernetes.io/part-of: secured-http-example
+      app.kubernetes.io/name: secured-sso
+      app.kubernetes.io/component: backend
+      app.openshift.io/runtime: sso
+      app.openshift.io/runtime-version: "7.3"
   spec:
     to:
       kind: Service
@@ -179,8 +189,11 @@ items:
   metadata:
     name: sso
     labels:
-      application: sso
-      component: server
+      app.kubernetes.io/part-of: secured-http-example
+      app.kubernetes.io/name: secured-sso
+      app.kubernetes.io/component: backend
+      app.openshift.io/runtime: sso
+      app.openshift.io/runtime-version: "7.3"
   spec:
     to:
       kind: Service

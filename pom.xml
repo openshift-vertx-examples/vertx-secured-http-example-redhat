@@ -29,7 +29,7 @@
   <description>Secured Vertx - HTTP &amp; Red Hat SSO</description>
 
   <properties>
-    <vertx.version>3.9.0.redhat-00008</vertx.version>
+    <vertx.version>3.9.1.redhat-00001</vertx.version>
     <slf4j.version>1.7.30</slf4j.version>
     <vertx-maven-plugin.version>1.0.22</vertx-maven-plugin.version>
     <vertx.verticle>io.openshift.example.RestApplication</vertx.verticle>
@@ -41,7 +41,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <fabric8.generator.from>registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift</fabric8.generator.from>
+    <fabric8.generator.from>registry.access.redhat.com/ubi8/openjdk-11</fabric8.generator.from>
   </properties>
 
   <build>
@@ -115,6 +115,7 @@
           <includeOnlyProperties>
             <includeOnlyProperty>^git.remote.origin.url$</includeOnlyProperty>
           </includeOnlyProperties>
+          <failOnNoGitDirectory>false</failOnNoGitDirectory>
         </configuration>
       </plugin>
     </plugins>

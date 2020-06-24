@@ -23,7 +23,7 @@
   <groupId>io.openshift.example</groupId>
   <artifactId>secured-vertx-http</artifactId>
   <packaging>jar</packaging>
-  <version>33-SNAPSHOT</version>
+  <version>33</version>
 
   <name>Vert.x - Secured HTTP endpoint</name>
   <description>Secured Vertx - HTTP &amp; Red Hat SSO</description>

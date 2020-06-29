@@ -51,7 +51,7 @@ public class RestApplication extends AbstractVerticle {
         .put("secret", System.getenv("SECRET")));
 
     // Configure the AuthHandler to process JWT's
-    router.route("/greeting").handler(JWTAuthHandler.create(
+    router.route("/api/greeting").handler(JWTAuthHandler.create(
       JWTAuth.create(vertx, new JWTAuthOptions()
         .addPubSecKey(new PubSecKeyOptions()
           .setAlgorithm("RS256")
@@ -60,7 +60,7 @@ public class RestApplication extends AbstractVerticle {
         .setPermissionsClaimKey("realm_access/roles"))));
 
     // This is how one can do RBAC, e.g.: only admin is allowed
-    router.get("/greeting").handler(ctx ->
+    router.get("/api/greeting").handler(ctx ->
       ctx.user().isAuthorized("booster-admin", authz -> {
         if (authz.succeeded() && authz.result()) {
           ctx.next();
@@ -70,7 +70,7 @@ public class RestApplication extends AbstractVerticle {
         }
       }));
 
-    router.get("/greeting").handler(ctx -> {
+    router.get("/api/greeting").handler(ctx -> {
       String name = ctx.request().getParam("name");
       if (name == null) {
         name = "World";

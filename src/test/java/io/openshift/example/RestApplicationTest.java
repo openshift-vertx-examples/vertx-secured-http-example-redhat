@@ -55,7 +55,7 @@ public class RestApplicationTest {
   public void callGreetingTest(TestContext context) {
     // Send a request and get a response
     Async async = context.async();
-    wclient.get(PORT, "localhost", "/greeting")
+    wclient.get(PORT, "localhost", "/api/greeting")
       .send(resp -> {
         context.assertTrue(resp.succeeded());
         context.assertEquals(resp.result().statusCode(), 401);
@@ -67,7 +67,7 @@ public class RestApplicationTest {
   public void callGreetingWithParamTest(TestContext context) {
     // Send a request and get a response
     Async async = context.async();
-    wclient.get(PORT, "localhost", "/greeting?name=Charles")
+    wclient.get(PORT, "localhost", "/api/greeting?name=Charles")
       .send(resp -> {
         context.assertTrue(resp.succeeded());
         context.assertEquals(resp.result().statusCode(), 401);

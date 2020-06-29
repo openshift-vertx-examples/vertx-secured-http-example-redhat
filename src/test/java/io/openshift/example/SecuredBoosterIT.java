@@ -86,7 +86,7 @@ public class SecuredBoosterIT {
     String token = getToken("alice", "password");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(exampleEndpoint.toString() + "greeting")
+      .when().get(exampleEndpoint.toString() + "api/greeting")
       .then().body("content", equalTo("Hello, World!"));
   }
 
@@ -95,7 +95,7 @@ public class SecuredBoosterIT {
     String token = getToken("alice", "password");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(exampleEndpoint.toString() + "greeting?name=Scott")
+      .when().get(exampleEndpoint.toString() + "api/greeting?name=Scott")
       .then().body("content", equalTo("Hello, Scott!"));
   }
 
@@ -104,7 +104,7 @@ public class SecuredBoosterIT {
     String token = getToken("admin", "admin");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(exampleEndpoint.toString() + "greeting")
+      .when().get(exampleEndpoint.toString() + "api/greeting")
       .then().statusCode(403); // should be 403 Forbidden, as the admin user does not have the required role
   }
 
@@ -113,7 +113,7 @@ public class SecuredBoosterIT {
     String token = getToken("alice", "bad");
 
     given().header("Authorization", "Bearer " + token)
-      .when().get(exampleEndpoint.toString() + "greeting?name=Scott")
+      .when().get(exampleEndpoint.toString() + "api/greeting?name=Scott")
       .then().statusCode(401); // should be 401 Unauthorized, as auth fails because of providing bad password (token is null)
   }
 

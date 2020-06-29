@@ -46,7 +46,7 @@ objects:
     - name: latest
       from:
         kind: DockerImage
-        name: registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift
+        name: registry.access.redhat.com/ubi8/openjdk-11
 
 - apiVersion: v1
   kind: BuildConfig

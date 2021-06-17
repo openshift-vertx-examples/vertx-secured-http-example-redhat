@@ -52,7 +52,7 @@ items:
       targetPort: 8080
     selector:
       deploymentConfig: sso
-- apiVersion: v1
+- apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
     name: sso
@@ -61,7 +61,7 @@ items:
       app.kubernetes.io/name: secured-sso
       app.kubernetes.io/component: backend
       app.openshift.io/runtime: sso
-      app.openshift.io/runtime-version: "7.3"     
+      app.openshift.io/runtime-version: "7.3"
   spec:
     strategy:
       type: Rolling
@@ -168,7 +168,7 @@ items:
           emptyDir: {}
     triggers:
     - type: ConfigChange
-- apiVersion: v1
+- apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
     name: secure-sso
@@ -184,7 +184,7 @@ items:
       name: secure-sso
     tls:
       termination: passthrough
-- apiVersion: v1
+- apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
     name: sso

@@ -17,7 +17,7 @@
 package io.openshift.example;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
+import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -37,7 +37,7 @@ public class RestApplication extends AbstractVerticle {
   private long counter;
 
   @Override
-  public void start(Future<Void> done) {
+  public void start(Promise<Void> done) {
     // Create a router object.
     Router router = Router.router(vertx);
     router.get("/health").handler(rc -> rc.response().end("OK"));

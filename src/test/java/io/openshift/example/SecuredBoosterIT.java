@@ -19,7 +19,7 @@ package io.openshift.example;
 import org.arquillian.cube.kubernetes.impl.utils.CommandExecutor;
 import org.arquillian.cube.openshift.impl.enricher.AwaitRoute;
 import org.arquillian.cube.openshift.impl.enricher.RouteURL;
-import org.arquillian.spacelift.execution.ExecutionException; 
+import org.arquillian.spacelift.execution.ExecutionException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.*;
 import org.junit.runner.RunWith;

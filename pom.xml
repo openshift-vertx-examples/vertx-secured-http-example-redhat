@@ -30,9 +30,6 @@
 
   <properties>
     <vertx.version>4.1.0.redhat-00004</vertx.version>
-    <release.candidate.repository>
-      http://indy.psi.redhat.com/api/content/maven/group/static
-    </release.candidate.repository>
     <slf4j.version>1.7.30</slf4j.version>
     <vertx-maven-plugin.version>1.0.24</vertx-maven-plugin.version>
     <vertx.verticle>io.openshift.example.RestApplication</vertx.verticle>
@@ -317,19 +314,6 @@
       <name>Red Hat Early Access Repository</name>
       <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
     </repository>
-    <repository>
-      <id>redhat-build</id>
-      <name>Red Hat builds Repository</name>
-      <url>${release.candidate.repository}</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -343,19 +327,5 @@
       <name>Red Hat Early Access Repository</name>
       <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
     </pluginRepository>
-    <pluginRepository>
-      <id>redhat-build</id>
-      <name>Red Hat builds Repository</name>
-      <url>${release.candidate.repository}</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
   </pluginRepositories>
-
 </project>

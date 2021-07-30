@@ -57,7 +57,8 @@ public class RestApplication extends AbstractVerticle {
 //    loadPublicKey();
     // Create a router object.
     Router router = Router.router(vertx);
-    router.get("/health").handler(rc -> rc.response().end("OK"));
+    router.get("/health").handler(rc -> rc.response().setStatusCode(200).end("OK"));
+    router.get().handler(StaticHandler.create());
 
     JsonObject keycloakJson = new JsonObject()
       .put("realm", System.getenv("REALM"))

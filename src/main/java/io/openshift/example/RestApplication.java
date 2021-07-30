@@ -40,16 +40,21 @@ public class RestApplication extends AbstractVerticle {
   private static String PUBLIC_KEY;
   private long counter;
 
-  static {
-    try {
-      PUBLIC_KEY = IOUtils.toString(Paths.get("src", "test", "resources", "public.pem").toFile().toURI(), Charset.defaultCharset());
-    } catch (IOException e) {
-      System.err.println("Unable to load PUBLIC_KEY from pem file!");
+  public static void loadPublicKey() {
+    PUBLIC_KEY = System.getenv("REALM_PUBLIC_KEY");
+    if (PUBLIC_KEY == null) {
+      System.err.println("PUBLIC_KEY loaded from REALM_PUBLIC_KEY is null, reading PEM file.");
+      try {
+        PUBLIC_KEY = IOUtils.toString(Paths.get("target", "test-classes", "public.pem").toFile().toURI(), Charset.defaultCharset());
+      } catch (IOException e) {
+        System.err.println("Unable to load PUBLIC_KEY from PEM file!");
+      }
     }
   }
 
   @Override
   public void start(Promise<Void> done) {
+    loadPublicKey();
     // Create a router object.
     Router router = Router.router(vertx);
     router.get("/health").handler(rc -> rc.response().end("OK"));

@@ -37,24 +37,24 @@ import org.apache.commons.io.IOUtils;
 import static io.vertx.core.http.HttpHeaders.CONTENT_TYPE;
 
 public class RestApplication extends AbstractVerticle {
-  private static String PUBLIC_KEY;
+  private static final String PUBLIC_KEY = System.getenv("REALM_PUBLIC_KEY");
   private long counter;
 
-  public static void loadPublicKey() {
-    PUBLIC_KEY = System.getenv("REALM_PUBLIC_KEY");
-    if (PUBLIC_KEY == null) {
-      System.err.println("PUBLIC_KEY loaded from REALM_PUBLIC_KEY is null, reading PEM file.");
-      try {
-        PUBLIC_KEY = IOUtils.toString(Paths.get("target", "test-classes", "public.pem").toFile().toURI(), Charset.defaultCharset());
-      } catch (IOException e) {
-        System.err.println("Unable to load PUBLIC_KEY from PEM file!");
-      }
-    }
-  }
+//  public static void loadPublicKey() {
+//    PUBLIC_KEY = System.getenv("REALM_PUBLIC_KEY");
+//    if (PUBLIC_KEY == null) {
+//      System.err.println("PUBLIC_KEY loaded from REALM_PUBLIC_KEY is null, reading PEM file.");
+//      try {
+//        PUBLIC_KEY = IOUtils.toString(Paths.get("target", "test-classes", "public.pem").toFile().toURI(), Charset.defaultCharset());
+//      } catch (IOException e) {
+//        System.err.println("Unable to load PUBLIC_KEY from PEM file!");
+//      }
+//    }
+//  }
 
   @Override
   public void start(Promise<Void> done) {
-    loadPublicKey();
+//    loadPublicKey();
     // Create a router object.
     Router router = Router.router(vertx);
     router.get("/health").handler(rc -> rc.response().end("OK"));
@@ -77,7 +77,7 @@ public class RestApplication extends AbstractVerticle {
         .addPubSecKey(new PubSecKeyOptions()
           .setAlgorithm("RS256")
           .setBuffer(PUBLIC_KEY)))));
-
+    System.out.println("PUBLIC_KEY: " + PUBLIC_KEY);
     // This is how one can do RBAC, e.g.: only admin is allowed
     router.get("/api/greeting").handler(ctx -> {
       AuthorizationProvider authorizationProvider = MicroProfileAuthorization.create();

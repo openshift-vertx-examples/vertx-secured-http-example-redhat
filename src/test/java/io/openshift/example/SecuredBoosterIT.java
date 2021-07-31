@@ -154,7 +154,7 @@ public class SecuredBoosterIT {
       .relaxedHTTPSValidation()
       .params(requestParams)
       .when()
-      .post(ssoEndpoint + "/realms/master/protocol/openid-connect/token")
+      .post(ssoEndpoint + "/realms/demo/protocol/openid-connect/token")
       .path("access_token");
   }
 }

@@ -31,7 +31,7 @@
   <properties>
     <vertx.version>3.9.1.redhat-00001</vertx.version>
     <slf4j.version>1.7.32</slf4j.version>
-    <vertx-maven-plugin.version>1.0.24</vertx-maven-plugin.version>
+    <vertx-maven-plugin.version>1.0.26</vertx-maven-plugin.version>
     <vertx.verticle>io.openshift.example.RestApplication</vertx.verticle>
 
     <fabric8-maven-plugin.version>4.4.1</fabric8-maven-plugin.version>
